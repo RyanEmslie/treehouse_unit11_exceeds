@@ -1,0 +1,20 @@
+{
+  "name": "techdegree-fullstackjs-course-review-rest-api",
+  "version": "1.0.0",
+  "description": "Unit 11 REST API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js localhost 5000"
+  },
+  "author": "Ryan Emslie",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.17.5"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.4.1",
+    "morgan": "^1.9.0"
+  }
+}
