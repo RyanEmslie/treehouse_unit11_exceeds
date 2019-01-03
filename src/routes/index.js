@@ -1,5 +1,6 @@
 const express = require("express");
-const router = express.Router(); // set up router
+const router = express.Router();
+const mid = require("../middleware");
 const auth = require("basic-auth");
 
 const mongoose = require("mongoose");
@@ -88,7 +89,7 @@ router.get("/courses/:courseId", (req, res, next) => {
 
 // CREATE NEW COURSE
 // POST /api/courses
-router.post("/courses", function(req, res, next) {
+router.post("/courses", mid.requireAuth, function(req, res, next) {
   // IF TRUE CREATE NEW USER
   const course = new Course(req.body);
   course.save(function(error) {
@@ -109,12 +110,13 @@ router.post("/courses", function(req, res, next) {
 });
 
 //PUT locates course by ID and Updates
-router.put("/courses/:courseId", (req, res, next) => {
-  // router.put('/:courseId', mid.authUser, (req, res, next) => {
+// router.put("/courses/:courseId", (req, res, next) => {
+router.put("/courses/:courseId", mid.requireAuth, (req, res, next) => {
   Course.findByIdAndUpdate(
     req.params.courseId,
     { $set: req.body },
-    (err, course) => {
+    // (err, course) => {
+    err => {
       if (err) {
         return next(err);
       } else {
@@ -124,7 +126,6 @@ router.put("/courses/:courseId", (req, res, next) => {
   );
 });
 
-
 // *******************
 // ******REVIEWS******
 // *******************
@@ -132,60 +133,24 @@ router.put("/courses/:courseId", (req, res, next) => {
 // CREATE NEW REVIEW
 // POST /api/courses/:courseId
 router.post("/courses/:courseId/reviews", function(req, res, next) {
-    // IF TRUE CREATE NEW USER
-    const review = new Review(req.body);
-    review.save(function(error) {
-      if (error && error.name === "ValidationError") {
-        res.status(401).json({
-          message: "DOH! - All fields required.",
-          response: error
-        });
-      } else if (error) {
-        return next(error);
-      } else {
-        res
-          .status(201)
-          .location("/courses/:courseId")
-          .send();
-      }
-    });
+  // IF TRUE CREATE NEW USER
+  const review = new Review(req.body);
+  review.save(function(error) {
+    if (error && error.name === "ValidationError") {
+      res.status(401).json({
+        message: "DOH! - All fields required.",
+        response: error
+      });
+    } else if (error) {
+      return next(error);
+    } else {
+      res
+        .status(201)
+        .location("/courses/:courseId")
+        .send();
+    }
   });
-
-
-
-
-// //UPDATE COURSE
-// //PUT
-// router.put('/courses/:courseId', function(req, res, next) {
-//     if (req.body.user && req.body.user._id && req.body.user._id == req.userId) {
-//     //   const course = new Course(req.body);
-//       Course.update({ _id: course._id }, course,
-//         function (error) {
-//           if (error && error.name === 'ValidationError') {
-//             res
-//               .status(400)
-//               .json({
-//                 response: error
-//               })
-//           } else if (error) {
-//             return next(error);
-//           } else {
-//             res
-//               .status(204)
-//               .send();
-//               return next;
-//           }
-//         }
-//       );
-//     }
-//     // else {
-//     //   let err = new Error('Access not allowed - can only be edited by author');
-//     //   err.status = 403;
-//     //   return next(err);
-//     // }
-//   });
-
-
+});
 
 
 module.exports = router;

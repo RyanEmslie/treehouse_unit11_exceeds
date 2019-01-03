@@ -1,20 +1,61 @@
 'use strict';
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-// var bcrypt = require('bcrypt');
-// var validator = require('validator');
+const bcrypt = require('bcrypt');
+// const validator = require('validator');
 
 const UserSchema = new Schema({
 	fullName: String,
 	email: {type: String, required: true, unique: true},
 	password: {type: String, required: true}
-
 });
 
-// var saltRounds = 10;
+
+// authenticate input against database documents
+// Code taken from the Unit lesson
+UserSchema.statics.authenticate = function(email, password, callback) {
+	User.findOne({ email: email })
+		.exec(function (error, user) {
+		  if (error) {
+			return callback(error);
+		  } else if ( !user ) {
+			const err = new Error('User not found.');
+			err.status = 401;
+			return callback(err);
+		  }
+		  bcrypt.compare(password, user.password , function(error, result) {
+			if (result === true) {
+			  return callback(null, user);
+			} else {
+			  return callback();
+			}
+		  })
+		});
+	}
+
+
+// hash password before saving to database
+// Code taken from the Unit lesson
+UserSchema.pre('save', function(next) {
+	const user = this;
+	bcrypt.hash(user.password, 10, function(err, hash) {
+	  if (err) {
+		return next(err);
+	  }
+	  user.password = hash;
+	  next();
+	})
+  });
+ 
+
+const User = mongoose.model('User', UserSchema);
+module.exports = User;
+
+
+// const saltRounds = 10;
 // UserSchema.methods.setPassword = function (password, confirmPassword) {
 //   // Update the User model to store the user's password as a salted & hashed value
-//   var salt = bcrypt.genSaltSync(saltRounds);
+//   const salt = bcrypt.genSaltSync(saltRounds);
 //   this.password = bcrypt.hashSync(password, salt);
 //   this.confirmPassword = bcrypt.hashSync(confirmPassword, salt);
 // };
@@ -35,8 +76,3 @@ const UserSchema = new Schema({
 //     done(!count);
 //   });
 // }, 'This email address is already being used by another user.');
-
-
-const User = mongoose.model('User', UserSchema);
-
-module.exports = User;

@@ -5,16 +5,15 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require('body-parser').json;
+
 const app = express();
 
 
 // use bodyParser
 app.use(bodyParser());
-
 // set our port
 app.set("port", process.env.PORT || 5000);
-
-// morgan gives us http request logging
+// http request logging
 app.use(morgan("dev"));
 
 
@@ -49,7 +48,7 @@ app.get("/", (req, res) => {
 });
 
 
-// setup our static route to serve files from the "public" folder
+// serve files from the "public" folder
 app.use('/', express.static('public'));
 
 // set up api routes router
@@ -60,10 +59,6 @@ app.use('/api', api_routes);
 // **************************************
 // ********** ERROR HANDLERS*************
 // **************************************
-// uncomment this route in order to test the global error handler
-// app.get("/error", function(req, res) {
-//   throw new Error("Test error");
-// });
 
 // send 404 if no other route matched
 app.use((req, res) => {
@@ -82,7 +77,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// start listening on our port
+// start listening on port 5000
 const server = app.listen(app.get("port"), () => {
   console.log(`Express server is listening on port ${server.address().port}`);
 });

@@ -2,10 +2,7 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const User = require('../models/user')
-// const ObjectId = mongoose.Schema.Types.ObjectId;
-
-
+// const User = require('../models/user')
 
 const ReviewSchema = new Schema({
     user: {
@@ -17,12 +14,6 @@ const ReviewSchema = new Schema({
 	review: {type: String}
 })
 
-
-// // Round rating that user entered to nearest whole number
-// ReviewSchema.pre('save', function(next) {
-// 	Math.round(this.rating);
-// 	next();
-//   });
   
 const Review = mongoose.model('Review', ReviewSchema);
 module.exports = Review;

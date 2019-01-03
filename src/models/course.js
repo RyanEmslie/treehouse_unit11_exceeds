@@ -2,7 +2,6 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// const ObjectId = mongoose.Schema.Types.ObjectId;
 
 var CourseSchema = new Schema({
   user: {type: Schema.Types.ObjectId, ref: "User"},
@@ -18,13 +17,8 @@ var CourseSchema = new Schema({
   reviews: [{type: Schema.Types.ObjectId, ref: "Review"}]
 });
 
-
-
-module.exports = mongoose.model("Course", CourseSchema);
-
-
-
-
+const Course = mongoose.model("Course", CourseSchema);
+module.exports = Course;
 
 
 // // Ensure course contains at least one step
@@ -47,7 +41,3 @@ module.exports = mongoose.model("Course", CourseSchema);
 
 //     return averageRating;
 //   });
-
-const Course = mongoose.model("Course", CourseSchema);
-
-module.exports = Course;
